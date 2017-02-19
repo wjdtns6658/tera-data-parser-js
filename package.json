@@ -1,0 +1,14 @@
+{
+  "name": "tera-data-parser",
+  "version": "0.1.0",
+  "description": "",
+  "license": "ISC",
+  "author": "meishu",
+  "files": [
+    "lib/"
+  ],
+  "main": "lib/index.js",
+  "dependencies": {
+    "long": "^3.2.0"
+  }
+}
