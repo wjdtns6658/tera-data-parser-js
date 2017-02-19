@@ -8,7 +8,16 @@
     "lib/"
   ],
   "main": "lib/index.js",
+  "scripts": {
+    "test": "tap test/**.js"
+  },
   "dependencies": {
     "long": "^3.2.0"
+  },
+  "devDependencies": {
+    "coveralls": "^2.11.16",
+    "sinon": "^1.17.7",
+    "tap": "^10.2.0",
+    "tera-data": "github:meishuu/tera-data#staging-37"
   }
 }
