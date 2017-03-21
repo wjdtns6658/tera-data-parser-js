@@ -7,29 +7,33 @@ const path = require('path');
 // and we can't just re-require because node caches modules
 const protocol = require('../lib/protocol');
 
-// helper function
+// helper functions
 function getTestDataPath(dir) {
   return path.join(__dirname, dir, 'package.json');
 }
 
-const _console = {};
+const stubConsole = (() => {
+  const cons = {};
 
-for (const method of ['log', 'warn', 'error']) {
-  _console[method] = console[method].bind(console);
-}
+  for (const method of ['log', 'warn', 'error']) {
+    cons[method] = console[method].bind(console);
+  }
+
+  return (method, array) =>
+    sinon.stub(console, method, (...args) => {
+      if (args[0].startsWith('[protocol]')) {
+        array.push(args);
+      } else {
+        cons.warn(...args);
+      }
+    });
+})();
 
 // tests
 test('load', (t) => {
   // set up
   const warnings = [];
-
-  const warn = sinon.stub(console, 'warn', (...args) => {
-    if (args[0].startsWith('[protocol]')) {
-      warnings.push(args);
-    } else {
-      _console.warn(...args);
-    }
-  });
+  const warn = stubConsole('warn', warnings);
 
   // test loads
   t.throws(
@@ -61,12 +65,17 @@ test('load', (t) => {
 
   // .def parsing
   t.ok(
-    warnings.some(w => /parse error: malformed line\s+at ".+TEST_DEF\.def", line 4/.test(w)),
+    warnings.some(w => /invalid filename syntax ".+NO_VERSION\.def"/.test(w)),
+    'should warn on invalid .def filename'
+  );
+
+  t.ok(
+    warnings.some(w => /parse error: malformed line\s+at ".+TEST_DEF\.1\.def", line 4/.test(w)),
     'should warn on malformed line in a .def'
   );
 
   t.ok(
-    warnings.some(w => /parse warning: array nesting too deep\s+at ".+TEST_DEF\.def", line 21/.test(w)),
+    warnings.some(w => /parse warning: array nesting too deep\s+at ".+TEST_DEF\.1\.def", line 21/.test(w)),
     'should warn on invalid array level in a .def'
   );
 
@@ -89,7 +98,60 @@ test('parse', (t) => {
 });
 
 test('write', (t) => {
-  // TODO
+  const load = protocol.load(getTestDataPath('protocol-write'));
+  if (!load) t.bailout('could not load protocol-write for testing');
+
+  const testDefDefault = Buffer.from('2d00e8032b00000000000000000000000000000000000000000000000000000000000000000000000000000000', 'hex');
+
+  // TODO maybe split into tests for each field type?
+  t.same(
+    protocol.write('TEST_DEF', 2, {
+      byte: 1,
+      int16: 2,
+      int32: 3,
+      int64: { high: 4, low: 5 },
+      uint16: 6,
+      uint32: 7,
+      uint64: { high: 8, low: 9 },
+      float: 10.11,
+      string: 'twelve',
+      array: [
+        {
+          element: 13,
+          nested: [
+            { element1: 14, element2: 15 },
+            { element1: 16, element2: 17 },
+          ],
+        },
+      ],
+    }),
+    Buffer.from('5900e8032b000100390001020003000000050000000400000006000700000009000000080000008fc221417400770065006c0076006500000039000000020045000d00000045004f000e0000000f004f000000100000001100', 'hex'),
+    'should write all fields and types correctly'
+  );
+
+  t.same(
+    protocol.write('TEST_DEF', 2),
+    testDefDefault,
+    'should use default values for missing properties'
+  );
+
+  t.same(
+    protocol.write('TEST_DEF', 1, { byte: 1 }),
+    Buffer.from('0500e80301', 'hex'),
+    'should use the specified definition version'
+  );
+
+  t.same(
+    protocol.write('TEST_DEF', '*'),
+    testDefDefault,
+    'should use latest version for "*"'
+  );
+
+  t.same(
+    protocol.write('TEST_DEF'),
+    testDefDefault,
+    'should use latest version for sole string identifier'
+  );
 
   t.end();
 });
