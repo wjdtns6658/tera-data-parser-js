@@ -9,6 +9,7 @@
   ],
   "main": "lib/index.js",
   "scripts": {
+    "lint": "eslint .",
     "test": "tap test/**.js"
   },
   "dependencies": {
@@ -16,6 +17,9 @@
   },
   "devDependencies": {
     "coveralls": "^2.11.16",
+    "eslint": "^3.18.0",
+    "eslint-config-airbnb-base": "^11.1.1",
+    "eslint-plugin-import": "^2.2.0",
     "sinon": "^1.17.7",
     "tap": "^10.2.0",
     "tera-data": "github:meishuu/tera-data#staging-37"
