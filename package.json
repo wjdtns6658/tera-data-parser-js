@@ -22,7 +22,7 @@
     "eslint-plugin-import": "^2.2.0",
     "sinon": "^1.17.7",
     "tap": "^10.2.0",
-    "tera-data": "github:meishuu/tera-data#staging-37"
+    "tera-data": "meishuu/tera-data"
   },
   "peerDependencies": {
     "tera-data": "1.x"
