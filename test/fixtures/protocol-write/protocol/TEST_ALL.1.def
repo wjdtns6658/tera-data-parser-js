@@ -1,7 +1,4 @@
-offset string
-count  array
-offset array
-
+bool   bool
 byte   byte
 int16  int16
 int32  int32
@@ -10,13 +7,22 @@ uint16 uint16
 uint32 uint32
 uint64 uint64
 float  float
+
+object object
+- int32 property
+- array array
+- - int32 element
+- - object nested
+- - - int32  element1
+- - - uint16 element2
+
+bytes  bytes
 string string
 
 array  array
-- count  nested
-- offset nested
-
 - int32  element
+- string string
 - array  nested
 - - int32  element1
 - - uint16 element2
+- - string string

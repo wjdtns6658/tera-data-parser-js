@@ -2,6 +2,7 @@ const { test } = require('tap');
 const sinon = require('sinon');
 
 const path = require('path');
+const spec = require('./spec/protocol-spec.js');
 
 // we have to be careful with this because the object stores state,
 // and we can't just re-require because node caches modules
@@ -9,7 +10,7 @@ const protocol = require('../lib/protocol');
 
 // helper functions
 function getTestDataPath(dir) {
-  return path.join(__dirname, dir, 'package.json');
+  return path.join(__dirname, 'fixtures', dir);
 }
 
 const stubConsole = (() => {
@@ -92,7 +93,16 @@ test('load', (t) => {
 });
 
 test('parse', (t) => {
-  // TODO
+  const load = protocol.load(getTestDataPath('protocol-write'));
+  if (!load) t.bailout('could not load protocol-write for testing');
+
+  for (const testCase of spec.both.concat(spec.parse)) {
+    t.same(
+      protocol.parse(...testCase.args, testCase.buffer),
+      testCase.object,
+      `${testCase.it} (parse)`
+    );
+  }
 
   t.end();
 });
@@ -101,57 +111,13 @@ test('write', (t) => {
   const load = protocol.load(getTestDataPath('protocol-write'));
   if (!load) t.bailout('could not load protocol-write for testing');
 
-  const testDefDefault = Buffer.from('2d00e8032b00000000000000000000000000000000000000000000000000000000000000000000000000000000', 'hex');
-
-  // TODO maybe split into tests for each field type?
-  t.same(
-    protocol.write('TEST_DEF', 2, {
-      byte: 1,
-      int16: 2,
-      int32: 3,
-      int64: { high: 4, low: 5 },
-      uint16: 6,
-      uint32: 7,
-      uint64: { high: 8, low: 9 },
-      float: 10.11,
-      string: 'twelve',
-      array: [
-        {
-          element: 13,
-          nested: [
-            { element1: 14, element2: 15 },
-            { element1: 16, element2: 17 },
-          ],
-        },
-      ],
-    }),
-    Buffer.from('5900e8032b000100390001020003000000050000000400000006000700000009000000080000008fc221417400770065006c0076006500000039000000020045000d00000045004f000e0000000f004f000000100000001100', 'hex'),
-    'should write all fields and types correctly'
-  );
-
-  t.same(
-    protocol.write('TEST_DEF', 2),
-    testDefDefault,
-    'should use default values for missing properties'
-  );
-
-  t.same(
-    protocol.write('TEST_DEF', 1, { byte: 1 }),
-    Buffer.from('0500e80301', 'hex'),
-    'should use the specified definition version'
-  );
-
-  t.same(
-    protocol.write('TEST_DEF', '*'),
-    testDefDefault,
-    'should use latest version for "*"'
-  );
-
-  t.same(
-    protocol.write('TEST_DEF'),
-    testDefDefault,
-    'should use latest version for sole string identifier'
-  );
+  for (const testCase of spec.both.concat(spec.write)) {
+    t.same(
+      protocol.write(...testCase.args, testCase.object),
+      testCase.buffer,
+      `${testCase.it} (write)`
+    );
+  }
 
   t.end();
 });

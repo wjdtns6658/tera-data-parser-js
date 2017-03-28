@@ -1,0 +1,12 @@
+array arr
+- int32 int
+- byte  byte
+
+array arr2
+- string str
+
+array arr3
+- bool ok
+
+array arr4
+- int16 empty

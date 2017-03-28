@@ -1,6 +1,0 @@
-# empty lines and lines with comments should not be errors
-
-VALID_LINE 1
-TEST_DEF 2
-NON_NUMERIC_OPCODE HERE
-malformed

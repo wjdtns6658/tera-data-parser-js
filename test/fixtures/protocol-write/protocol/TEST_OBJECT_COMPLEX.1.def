@@ -1,0 +1,10 @@
+int16 int
+
+object obj
+- string str
+- array arr
+- - int16 int
+
+string str
+array arr
+- int16 int

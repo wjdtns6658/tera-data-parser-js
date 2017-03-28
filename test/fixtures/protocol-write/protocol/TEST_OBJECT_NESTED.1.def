@@ -1,0 +1,13 @@
+object obj
+- array arr
+- - object obj
+- - - array arr
+- - - - int16 int
+- - - - string str
+
+array arr
+- object obj
+- - array arr
+- - - object obj
+- - - - int16 int
+- - - - string str

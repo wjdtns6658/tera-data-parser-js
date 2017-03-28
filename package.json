@@ -10,7 +10,7 @@
   "main": "lib/index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "tap test/**.js"
+    "test": "tap test/*.js"
   },
   "dependencies": {
     "long": "^3.2.0"
