@@ -76,6 +76,16 @@ test('load', (t) => {
   );
 
   t.ok(
+    warnings.some(w => /parse warning: "count" and "offset" metatypes are deprecated, ignoring\s+at ".+TEST_DEF\.1\.def", line 17/.test(w)),
+    'should warn on deprecated "count" type in a .def'
+  );
+
+  t.ok(
+    warnings.some(w => /parse warning: "count" and "offset" metatypes are deprecated, ignoring\s+at ".+TEST_DEF\.1\.def", line 18/.test(w)),
+    'should warn on deprecated "offset" type in a .def'
+  );
+
+  t.ok(
     warnings.some(w => /parse warning: array nesting too deep\s+at ".+TEST_DEF\.1\.def", line 21/.test(w)),
     'should warn on invalid array level in a .def'
   );
