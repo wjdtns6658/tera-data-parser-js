@@ -235,6 +235,11 @@ module.exports = {
   ],
 
   write: [
-    // TODO
+    {
+      it: 'should use default (empty) values for missing properties',
+      args: ['TEST_ALL', 1],
+      buffer: Buffer.from('3a00e803000000003800000038000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000', 'hex'),
+      object: {},
+    },
   ],
 };
