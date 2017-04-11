@@ -15,6 +15,9 @@
   "dependencies": {
     "long": "^3.2.0"
   },
+  "optionalDependencies": {
+    "baldera-logger": "meishuu/baldera-logger"
+  },
   "devDependencies": {
     "coveralls": "^2.11.16",
     "eslint": "^3.18.0",

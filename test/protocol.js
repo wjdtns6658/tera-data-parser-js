@@ -17,7 +17,7 @@ const stubConsole = (() => {
   const cons = {};
 
   for (const method of ['log', 'warn', 'error']) {
-    cons[method] = console[method].bind(console);
+    cons[method] = console[method].bind(console); // eslint-disable-line no-console
   }
 
   return (method, array) =>

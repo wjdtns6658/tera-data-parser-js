@@ -13,9 +13,6 @@ module.exports = {
     // don't require comma dangle on functions until node 8.x
     'comma-dangle': ['error', 'always-multiline'],
 
-    // allow console to output warnings
-    'no-console': ['off'],
-
     // airbnb-base/style
     // allow continue in loops
     'no-continue': ['off'],
