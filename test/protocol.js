@@ -101,11 +101,12 @@ test('parse', (t) => {
   if (!load) t.bailout('could not load protocol-write for testing');
 
   for (const testCase of spec.both.concat(spec.parse)) {
-    t.same(
-      protocol.parse(...testCase.args, testCase.buffer),
-      testCase.object,
-      `${testCase.it} (parse)`
-    );
+    const result = protocol.parse(...testCase.args, testCase.buffer);
+    t.same(result, testCase.object, `${testCase.it} (parse)`);
+
+    if (testCase.subtests && testCase.subtests.parser) {
+      testCase.subtests.parser(t, testCase.buffer, result);
+    }
   }
 
   t.end();
@@ -116,11 +117,12 @@ test('write', (t) => {
   if (!load) t.bailout('could not load protocol-write for testing');
 
   for (const testCase of spec.both.concat(spec.write)) {
-    t.same(
-      protocol.write(...testCase.args, testCase.object),
-      testCase.buffer,
-      `${testCase.it} (write)`
-    );
+    const result = protocol.write(...testCase.args, testCase.object);
+    t.same(result, testCase.buffer, `${testCase.it} (write)`);
+
+    if (testCase.subtests && testCase.subtests.writer) {
+      testCase.subtests.writer(t, testCase.object, result);
+    }
   }
 
   t.end();

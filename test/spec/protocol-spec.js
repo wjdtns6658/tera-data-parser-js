@@ -231,7 +231,26 @@ module.exports = {
   ],
 
   parse: [
-    // TODO
+    {
+      it: 'should correctly handle "bytes" type',
+      args: ['TEST_BYTES', 1],
+      buffer: Buffer.from('1c0004000c000800140008000102030405060708090a0b0c0d0e0f10', 'hex'),
+      object: {
+        buf1: Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]),
+        buf2: Buffer.from([9, 10, 11, 12, 13, 14, 15, 16]),
+      },
+      subtests: {
+        parser(t, buf, obj) {
+          const copy = Buffer.from(obj.buf1);
+
+          for (let i = 0; i < buf.length; i++) {
+            buf[i] = (i * 2) % 256;
+          }
+
+          t.same(obj.buf1, copy, 'should make a copy of buffer data');
+        },
+      },
+    },
   ],
 
   write: [
