@@ -54,13 +54,13 @@ test('load', (t) => {
 
   // .map parsing
   t.ok(
-    warnings.some(w => /parse error: non-numeric opcode\s+at ".+protocol\.map", line 5/.test(w.message)),
-    'should warn on non-numeric opcode in protocol.map'
+    warnings.some(w => /parse error: non-numeric opcode\s+at ".+protocol\.1\.map", line 5/.test(w.message)),
+    'should warn on non-numeric opcode in protocol map'
   );
 
   t.ok(
-    warnings.some(w => /parse error: malformed line\s+at ".+protocol\.map", line 6/.test(w.message)),
-    'should warn on malformed line in protocol.map'
+    warnings.some(w => /parse error: malformed line\s+at ".+protocol\.1\.map", line 6/.test(w.message)),
+    'should warn on malformed line in protocol map'
   );
 
   // .def parsing
@@ -101,7 +101,7 @@ test('parse', (t) => {
   if (!load) t.bailout('could not load protocol-write for testing');
 
   for (const testCase of spec.both.concat(spec.parse)) {
-    const result = protocol.parse(...testCase.args, testCase.buffer);
+    const result = protocol.parse(1, ...testCase.args, testCase.buffer);
     t.same(result, testCase.object, `${testCase.it} (parse)`);
 
     if (testCase.subtests && testCase.subtests.parser) {
@@ -117,7 +117,7 @@ test('write', (t) => {
   if (!load) t.bailout('could not load protocol-write for testing');
 
   for (const testCase of spec.both.concat(spec.write)) {
-    const result = protocol.write(...testCase.args, testCase.object);
+    const result = protocol.write(1, ...testCase.args, testCase.object);
     t.same(result, testCase.buffer, `${testCase.it} (write)`);
 
     if (testCase.subtests && testCase.subtests.writer) {
